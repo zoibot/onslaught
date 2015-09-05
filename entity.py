@@ -1,8 +1,7 @@
 class Entity(object):
-    components = []
-    bag = {}
-
     def __init__(self, objects):
+        self.components = []
+        self.bag = {}
         objects.append(self)
         self.objects = objects
 

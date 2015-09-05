@@ -29,7 +29,7 @@ class Jeep(Entity):
                 self.modify_bag_key('angle', lambda x: x-turning_speed))
         inp.bind_key(pygame.K_RIGHT,
                 self.modify_bag_key('angle', lambda x: x+turning_speed))
-        inp.bind_key_down(pygame.K_SPACE,
+        inp.bind_key_down(pygame.K_z,
                 lambda e: self.fire_bullet())
         self.attach_component(inp)
 

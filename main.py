@@ -14,6 +14,10 @@ while True:
         if event.type == pygame.QUIT:
             gfx.cleanup()
             sys.exit(0)
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_q:
+              gfx.cleanup()
+              sys.exit(0)
     if objects_to_add:
         objects += objects_to_add
         del objects_to_add[:]

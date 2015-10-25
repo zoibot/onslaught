@@ -4,6 +4,7 @@ class Entity(object):
         self.bag = {}
         objects.append(self)
         self.objects = objects
+        self.dead = False
 
     def attach_component(self, component):
         component.attach(self)
@@ -31,6 +32,8 @@ class Entity(object):
     def update(self):
         for component in self.components:
             component.update(self)
+            if self.dead:
+                break
 
-    def spawn_object(self, entity):
-        self.objects.append(entity)
+    def destroy(self):
+        self.dead = True

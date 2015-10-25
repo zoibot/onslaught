@@ -23,6 +23,9 @@ def create_object(geometry):
     obj.vbo, obj.tex_vbo = create_geometry(geometry)
     objects[id] = obj
     return id
+def destroy_object(id):
+    print 'destroying ', id
+    del objects[id]
 def show_object(id, show):
     objects[id].active = show
 def set_transform(id, pos, angle):
@@ -125,8 +128,8 @@ def create_geometry(lines):
         #TODO 3. need to also add and subtract in length direction for ends
         v = end - start
         vn = v / np.linalg.norm(v)
-        s = start - 5 * vn
-        e = end + 5 * vn
+        s = start# - 5 * vn
+        e = end# + 5 * vn
     
         perp = np.array([v[1], -v[0], 0])
         perp = perp / np.linalg.norm(perp)

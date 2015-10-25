@@ -35,5 +35,4 @@ class Jeep(Entity):
 
     def fire_bullet(self):
         bullet = Bullet(self.objects, self.bag)
-        self.spawn_object(bullet)
 

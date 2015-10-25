@@ -4,6 +4,7 @@ from entity import *
 from physical import *
 from renderable import *
 from math import *
+from destroyable import *
 
 lines = np.array([[-10,0,1], [10,0,1]])
 
@@ -23,6 +24,12 @@ class Bullet(Entity):
         angle = pi * self.bag['angle']/180.
         self.bag['x'] += speed * cos(angle)
         self.bag['y'] += speed * sin(angle)
-        #TODO kill bullets off screen
+        x, y = self.bag['x'], self.bag['y']
+        if (x < 0 or 640 < x) or (y < 0 or 480 < y): 
+            self.destroy()
+        for destroyable in get_destroyables():
+            if destroyable.collides(x, y):
+                destroyable.destroy()
+                self.destroy()
     
 

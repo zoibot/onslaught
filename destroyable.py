@@ -19,9 +19,7 @@ class Destroyable(Component):
     def detach(self, entity):
         super(Destroyable, self).detach(entity)
         global destroyables
-        print destroyables
         destroyables = [destroyable for destroyable in destroyables if destroyable != self]
-        print destroyables
     
     def collides(self, x, y):
         ex, ey = self.get('x'), self.get('y')

@@ -13,7 +13,6 @@ class Bullet(Entity):
         super(Bullet, self).__init__(objects)
         self.attach_component(Physical())
         self.attach_component(Renderable(lines))
-        print bag
         self.bag['x'] = bag['x']
         self.bag['y'] = bag['y']
         self.bag['angle'] = bag['angle']

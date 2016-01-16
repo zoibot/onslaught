@@ -23,6 +23,7 @@ class Jeep(Entity):
             bag['y'] += speed * sin(angle)
             return bag
         inp.bind_key(pygame.K_UP, self.modify_bag(angle_to_direction))
+        self.initialized = True
         #inp.bind_key(pygame.K_DOWN, lambda self: self.modify_bag('y', lambda y: y+1))
         turning_speed = 2
         inp.bind_key(pygame.K_LEFT,

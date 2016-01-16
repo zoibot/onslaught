@@ -1,6 +1,7 @@
 import sys
 import pygame
 import gfx
+import object_manager
 
 from jeep import Jeep
 from tank import Tank
@@ -21,17 +22,25 @@ waves = [10, 10000, 15000, 20000, 23000, 25000]
 def main():
     global objects
     gfx.init()
+    object_manager.init(objects)
     clock = pygame.time.Clock()
-    frame = 0
+    ticks = 0
+    score = 0
+    score_text = gfx.create_text()
+    gfx.show_text(score_text, True)
+    gfx.set_text_transform(score_text, [320, 20], 0)
     while True:
-        frame += clock.get_time()
-        if frame > waves[0]:
+        clock.tick(60)
+        ticks += clock.get_time()
+        if ticks > waves[0]:
             waves.pop(0)
             spawn_tank()
+            score += 1
+            gfx.set_text(score_text, str(score))
             if not waves:
+                # need to actually kill tanks
                 print 'you win!'
                 sys.exit(1)
-        clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit(0)

@@ -15,16 +15,15 @@ class GfxObject(object):
 
 next_id = 0
 objects = {}
-def create_object(geometry):
+def create_object(geometry, close_loop = True):
     global next_id
     id = next_id
     next_id += 1
     obj = GfxObject()
-    obj.vbo, obj.tex_vbo = create_geometry(geometry)
+    obj.vbo, obj.tex_vbo = create_geometry(geometry, close_loop)
     objects[id] = obj
     return id
 def destroy_object(id):
-    print 'destroying ', id
     del objects[id]
 def show_object(id, show):
     objects[id].active = show
@@ -32,6 +31,32 @@ def set_transform(id, pos, angle):
     obj = objects[id]
     obj.pos = pos
     obj.angle = angle
+
+class TextObject(object):
+    pos = 0,0
+    angle = 0
+    active = False
+    str = ''
+
+next_text_id = 0
+text_objects = {}
+def create_text():
+    global next_text_id
+    id = next_text_id
+    next_text_id += 1
+    obj = TextObject()
+    text_objects[id] = obj
+    return id
+def destroy_text(id):
+    del text_objects[id]
+def show_text(id, show):
+    text_objects[id].active = show
+def set_text_transform(id, pos, angle):
+    obj = text_objects[id]
+    obj.pos = pos
+    obj.angle = angle
+def set_text(id, str):
+    text_objects[id].str = str
 
 VS = """
 #version 120
@@ -70,7 +95,7 @@ def init():
     init_pygame()
     init_shaders()
     init_gl()
-    init_geometry()
+    init_text()
 
 def init_pygame():
     # TODO refactor
@@ -108,16 +133,13 @@ def init_gl():
 
     glClearColor(0, 0, 0, 1)
 
-def init_geometry():
-    lines = np.array([[200,200,1],[200,400,1],[400,400,1]])
-    id = create_object(lines)
-    #show_object(id, True)
-    #vbo, vbo2 = create_geometry(lines)
-
-def create_geometry(lines):
+def create_geometry(lines, close_loop):
     #TODO transform into triangles surrounding lines in geometry shader instead of here
     def lines_from_points(points):
-        return list(zip(points, points[1:])) + [(points[-1], points[0])]
+        if close_loop:
+            return list(zip(points, points[1:])) + [(points[-1], points[0])]
+        else:
+            return list(zip(points, points[1:]))
     
     dest_array = np.zeros((2 * 3 * len(lines), 3), dtype='f')
     tex_array = np.zeros((2 * 3 * len(lines), 3), dtype='f')
@@ -153,6 +175,34 @@ def create_geometry(lines):
     
     return VBO(dest_array), VBO(tex_array)
 
+digits_lines = [
+# 0
+[[-5,8],[5,8],[5,-8],[-5,-8],[-5,8]],
+# 1
+[[5,8],[5,-8]],
+# 2
+[[5,8],[-5,8],[-5,0],[5,0],[5,-8],[-5,-8]],
+# 3
+[[-5,8],[5,8],[5,0],[-5,0],[5,0],[5,-8],[-5,-8]],
+# 4
+[[5,8],[5,-8],[5,0],[-5,0],[-5,-8]],
+# 5
+[[-5,8],[5,8],[5,0],[-5,0],[-5,-8],[5,-8]],
+# 6
+[[-5,0],[-5,8],[5,8],[5,0],[-5,0],[-5,-8],[5,-8]],
+# 7
+[[5,8],[5,-8],[-5,-8]],
+# 8
+[[-5,8],[5,8],[5,-8],[-5,-8],[-5,0],[5,0],[-5,0],[-5,8]],
+# 9
+[[5,8],[5,-8],[-5,-8],[-5,0],[5,0]],
+]
+digits = []
+def init_text():
+    for lines in digits_lines:
+        np_lines = np.array([[x,y,1] for [x,y] in lines])
+        digits.append(create_object(np_lines, False))
+
 def cleanup():
     for id, obj in objects.iteritems():
         del obj.vbo
@@ -183,6 +233,29 @@ def loop():
         glTexCoordPointerf(vbo2)
  
         glDrawArrays(GL_TRIANGLES, 0, len(vbo))
+
+        glPopMatrix()
+
+    for id, obj in text_objects.iteritems():
+        if not obj.active:
+            continue
+
+        glPushMatrix()
+        glTranslated(obj.pos[0], obj.pos[1], 0)
+        glRotated(obj.angle, 0, 0, 1)
+
+        for char in obj.str:
+            digit_obj = objects[digits[int(char)]]
+            vbo = digit_obj.vbo
+            vbo2 = digit_obj.tex_vbo
+            vbo.bind()
+            glVertexPointerf(vbo)
+
+            vbo2.bind()
+            glTexCoordPointerf(vbo2)
+ 
+            glDrawArrays(GL_TRIANGLES, 0, len(vbo))
+            glTranslated(15, 0, 0)
 
         glPopMatrix()
 

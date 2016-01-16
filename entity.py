@@ -5,6 +5,7 @@ class Entity(object):
         objects.append(self)
         self.objects = objects
         self.dead = False
+        self.initialized = False
 
     def attach_component(self, component):
         component.attach(self)

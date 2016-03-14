@@ -204,7 +204,7 @@ def init_text():
         digits.append(create_object(np_lines, False))
 
 def cleanup():
-    for id, obj in objects.iteritems():
+    for id, obj in objects.items():
         del obj.vbo
         del obj.tex_vbo
 
@@ -216,7 +216,7 @@ def loop():
     glEnableClientState(GL_VERTEX_ARRAY)
     glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
-    for id, obj in objects.iteritems():
+    for id, obj in objects.items():
         if not obj.active:
             continue
 
@@ -236,7 +236,7 @@ def loop():
 
         glPopMatrix()
 
-    for id, obj in text_objects.iteritems():
+    for id, obj in text_objects.items():
         if not obj.active:
             continue
 

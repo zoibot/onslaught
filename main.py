@@ -2,6 +2,7 @@ import sys
 import pygame
 import gfx
 import object_manager
+import game_state
 
 from jeep import Jeep
 from tank import Tank
@@ -9,6 +10,8 @@ from tank import Tank
 objects = []
 objects_to_add = []
 jeep = Jeep(objects_to_add)
+jeep.bag['x'] = 200
+jeep.bag['y'] = 200
 
 def spawn_tank():
     tank = Tank(objects_to_add)
@@ -25,21 +28,19 @@ def main():
     object_manager.init(objects)
     clock = pygame.time.Clock()
     ticks = 0
-    score = 0
     score_text = gfx.create_text()
     gfx.show_text(score_text, True)
     gfx.set_text_transform(score_text, [320, 20], 0)
     while True:
         clock.tick(60)
         ticks += clock.get_time()
-        if ticks > waves[0]:
+        gfx.set_text(score_text, game_state.get_score())
+        if ticks > waves[0] and len(object_manager.find_objects(Tank)) == 0:
             waves.pop(0)
             spawn_tank()
-            score += 1
-            gfx.set_text(score_text, str(score))
             if not waves:
                 # need to actually kill tanks
-                print 'you win!'
+                print('you win!')
                 sys.exit(1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

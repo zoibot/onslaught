@@ -1,10 +1,5 @@
-from entity import *
-from renderable import *
-from physical import *
-import numpy as np
 from input import *
 import pygame
-from math import *
 from bullet import *
 
 lines = np.array([[-10,5,1], [10,5,1], [10,-5,1], [-10,-5,1]])
@@ -24,7 +19,6 @@ class Jeep(Entity):
             return bag
         inp.bind_key(pygame.K_UP, self.modify_bag(angle_to_direction))
         self.initialized = True
-        #inp.bind_key(pygame.K_DOWN, lambda self: self.modify_bag('y', lambda y: y+1))
         turning_speed = 2
         inp.bind_key(pygame.K_LEFT,
                 self.modify_bag_key('angle', lambda x: x-turning_speed))
@@ -35,5 +29,5 @@ class Jeep(Entity):
         self.attach_component(inp)
 
     def fire_bullet(self):
-        bullet = Bullet(self.objects, self.bag)
+        Bullet(self.objects, type(self), self.bag)
 

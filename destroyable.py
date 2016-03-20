@@ -26,7 +26,7 @@ class Destroyable(Component):
         if self.shape:
             return self.shape.collides(ex, ey, x, y)
         else:
-            return (ex - x)**2 + (ey - y)**2 < 25
+            return (ex - x)**2 + (ey - y)**2 < 100
 
     def destroy(self):
         self.entity.destroy()
